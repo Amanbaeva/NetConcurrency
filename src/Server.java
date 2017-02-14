@@ -1,22 +1,32 @@
-import java.io.DataInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * Created by Сабина on 14.02.2017.
- */
 public class Server {
 
     public static void main(String[] args) {
-        ServerSocket serverSocket = null;
+        if (args.length < 1) {
+            System.out.println("Not enough arguments");
+            return;
+        }
+
+        int port = Integer.parseInt(args[0]);
+        ServerSocket serverSocket;
         try {
-            serverSocket = new ServerSocket(2020);
+            serverSocket = new ServerSocket(port);
             Socket socket = serverSocket.accept();
 
-            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-            String message = dataInputStream.readUTF();
-            System.out.println(message);
+            DataInputStream dis = new DataInputStream(socket.getInputStream());
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            String message;
+
+             do {
+                 message = dis.readUTF();
+                 System.out.println("Received from client: " + message);
+                 //Вероятно, здесь будет выполнение запроса клиента
+                 //Пока что - просто пересылка сообщений
+                dos.writeUTF("Server response: " + message);
+             } while (!"exit".equalsIgnoreCase(message));
 
         } catch (IOException e) {
             e.printStackTrace();

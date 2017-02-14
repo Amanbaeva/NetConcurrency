@@ -1,17 +1,38 @@
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
-/**
- * Created by Сабина on 14.02.2017.
- */
 public class Client {
     public static void main(String[] args) {
-        Socket socket = null;
+        if (args.length < 2) {
+            System.out.println("Not enough arguments");
+            return;
+        }
+
+        InetAddress address = null;
+
         try {
-            socket = new Socket("localhost", 2020);
-            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            dataOutputStream.writeUTF("Hello world");
+            address = InetAddress.getByName(args[0]);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        int port = Integer.parseInt(args[1]);
+        Socket socket;
+        try {
+            socket = new Socket(address, port);
+
+            DataInputStream dis = new DataInputStream(socket.getInputStream());
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+            String message;
+
+            do {
+                message = bufferedReader.readLine();
+                dos.writeUTF(message);
+                System.out.println(dis.readUTF());
+            } while (!"exit".equalsIgnoreCase(message));
 
         } catch (IOException e) {
             e.printStackTrace();
