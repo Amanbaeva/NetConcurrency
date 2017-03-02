@@ -28,6 +28,8 @@ public class Client {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
             String message;
 
+            System.out.println(dis.readUTF());
+
             do {
                 message = bufferedReader.readLine();
                 dos.writeUTF(message);
