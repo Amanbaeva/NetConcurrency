@@ -37,7 +37,7 @@ public class Client {
             } while (!"exit".equalsIgnoreCase(message));
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println();
         }
     }
 }

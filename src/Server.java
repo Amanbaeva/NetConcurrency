@@ -3,16 +3,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-    public static final int maxCount = 5;
-    public static volatile int currentCount = 0;
+    private  int maxCount;
+    private  int currentCount = 0;
 
-    public static void main(String[] args) {
-        if (args.length < 1) {
+    public void main(String[] args) {
+        if (args.length < 2) {
             System.out.println("Not enough arguments");
             return;
         }
 
         int port = Integer.parseInt(args[0]);
+        maxCount = Integer.parseInt(args[1]);
+
         ServerSocket serverSocket;
         try {
             serverSocket = new ServerSocket(port);
@@ -26,7 +28,7 @@ public class Server {
                     currentCount++;
                     dos.writeUTF("Access is allowed");
 
-                    Thread thread = new Thread(new Session(socket));
+                    Thread thread = new Thread(new Session(socket, this));
                     thread.start();
                 }
                 else {
@@ -37,6 +39,10 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void closeSession(){
+        currentCount--;
     }
 }
 

@@ -1,13 +1,16 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Session  implements Runnable {
     private Socket socket;
+    private Server server;
 
-    public Session(Socket socket) {
+    public Session(Socket socket, Server server) {
         this.socket = socket;
+        this.server = server;
     }
 
     @Override
@@ -26,7 +29,7 @@ public class Session  implements Runnable {
             } while (!"exit".equalsIgnoreCase(message));
 
             socket.close();
-            Server.currentCount--;
+            server.closeSession();
 
             System.out.println("Client ("+ Thread.currentThread().getName() + ") disconnected");
 
